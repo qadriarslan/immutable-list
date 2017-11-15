@@ -43,7 +43,7 @@ public class ImmutableLinkedListTest {
 
     @Test
     public void listHead3Test() {
-        ImmutableLinkedList<String> list = new ImmutableLinkedList<String>("Ashu");
+        ImmutableLinkedList<String> list = new ImmutableLinkedList<>("Ashu");
         Assert.assertEquals("Ashu", list.head());
     }
 
@@ -55,7 +55,7 @@ public class ImmutableLinkedListTest {
 
     @Test
     public void listTail2Test() {
-        ImmutableLinkedList<String> list = new ImmutableLinkedList<String>("Ashu");
+        ImmutableLinkedList<String> list = new ImmutableLinkedList<>("Ashu");
         Assert.assertEquals(new ImmutableLinkedList<>(), list.tail());
     }
 
@@ -118,14 +118,14 @@ public class ImmutableLinkedListTest {
     @Test
     public void listFilter1Test() {
         ImmutableLinkedList<String> list1 = new ImmutableLinkedList<>();
-        ImmutableLinkedList<String> list2 = list1.filter(x -> x.startsWith("X"));
+        ImmutableLinkedList<String> list2 = list1.filter(x -> true);
         Assert.assertEquals(list1, list2);
     }
 
     @Test
     public void listFilter2Test() {
         ImmutableLinkedList<String> list = new ImmutableLinkedList<>(null);
-        Assert.assertEquals(new ImmutableLinkedList<>(), list.filter(x -> x.startsWith("X")));
+        Assert.assertEquals(new ImmutableLinkedList<>(), list.filter(x -> true));
     }
 
     @Test
@@ -141,14 +141,14 @@ public class ImmutableLinkedListTest {
     @Test
     public void listMap1Test() {
         ImmutableLinkedList<String> list1 = new ImmutableLinkedList<>();
-        ImmutableLinkedList<String> list2 = list1.map(x -> x.toUpperCase());
+        ImmutableLinkedList<String> list2 = list1.map(x -> x);
         Assert.assertEquals(list1, list2);
     }
 
     @Test
     public void listMap2Test() {
         ImmutableLinkedList<String> list = new ImmutableLinkedList<>(null);
-        Assert.assertEquals(new ImmutableLinkedList<>(), list.map(x -> x.toUpperCase()));
+        Assert.assertEquals(new ImmutableLinkedList<>(), list.map(x -> x));
     }
 
     @Test
