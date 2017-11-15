@@ -1,25 +1,35 @@
 package com.qadri.list;
 
+import java.util.Optional;
+import java.util.function.Function;
+import java.util.function.Predicate;
+
 /**
  * Java implementation of the Immutable linked list.
+ * 
  * @author arslanqadri
  *
  * @param <T>
  */
 public class ImmutableLinkedList<T> {
-    private final T head;
+    private final Optional<T> head;
     private final ImmutableLinkedList<T> tail;
 
     public ImmutableLinkedList() {
-        this(null, null);
+        this.head = null;
+        this.tail = null;
     }
 
-    public ImmutableLinkedList(T head) {
-        this(head, null);
+    public ImmutableLinkedList(final T value) {
+        this.head = Optional.ofNullable(value);
+        this.tail = new ImmutableLinkedList<>();
     }
 
-    public ImmutableLinkedList(T head, ImmutableLinkedList<T> tail) {
-        this.head = head;
+    public ImmutableLinkedList(final T value, final ImmutableLinkedList<T> tail) {
+        if (tail == null) {
+            throw new RuntimeException("Tail can't be null. Use another constructor.");
+        }
+        this.head = Optional.ofNullable(value);
         this.tail = tail;
     }
 
@@ -29,7 +39,10 @@ public class ImmutableLinkedList<T> {
      * @return Head of the list.
      */
     public T head() {
-        return head;
+        if (isEmpty()) {
+            throw new RuntimeException("List is empty.");
+        }
+        return head.orElse(null);
     }
 
     /**
@@ -38,6 +51,9 @@ public class ImmutableLinkedList<T> {
      * @return Tail of the list.
      */
     public ImmutableLinkedList<T> tail() {
+        if (isEmpty()) {
+            throw new RuntimeException("List is empty.");
+        }
         return tail;
     }
 
@@ -86,13 +102,55 @@ public class ImmutableLinkedList<T> {
         return tail().reverse(stagingList.cons(head()));
     }
 
-    private boolean isEmpty() {
-        return head == null && tail == null;
+    /**
+     * Method to filter the elements of the list by the given filter.
+     * 
+     * @param filterBy
+     *            Filter to apply on the list.
+     * @return A new list containing only the elements that satisfy the filterBy
+     *         criteria.
+     */
+    public ImmutableLinkedList<T> filter(Predicate<T> filterBy) {
+        ImmutableLinkedList<T> filteredList;
+        if (isEmpty()) {
+            filteredList = this;
+        }
+        else if (head.isPresent() && filterBy.test(head.get())) {
+            filteredList = new ImmutableLinkedList<T>(head.get(), tail.filter(filterBy));
+        } else {
+            filteredList = tail.filter(filterBy);
+        }
+        return filteredList;
     }
 
-    @Override
-    public String toString() {
-        return "[" + (head != null ? head : "") + (tail != null ? ", " + tail : "") + "]";
+    /**
+     * Method to apply a given mapping function on the list elements.
+     * 
+     * @param mapBy
+     *            Mapping function to be applied on the list elements.
+     * @return A new list containing the elements obtained by applying the
+     *         mapping function.
+     */
+    public <R> ImmutableLinkedList<R> map(Function<T, R> mapBy) {
+        ImmutableLinkedList<R> mappedList;
+        if (isEmpty()) {
+            mappedList = new ImmutableLinkedList<R>();
+        } else if (head.isPresent()) {
+            mappedList = new ImmutableLinkedList<R>(mapBy.apply(head.get()), tail.map(mapBy));
+        } else {
+            mappedList = tail.map(mapBy);
+        }
+        return mappedList;
+    }
+
+    /**
+     * Method to check if the list is empty or not.
+     * 
+     * @return <code>true</code> if the list is empty, <code>false</code>
+     *         otherwise
+     */
+    public boolean isEmpty() {
+        return head == null;
     }
 
     @Override
